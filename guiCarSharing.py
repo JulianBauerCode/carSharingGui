@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui/gui02.ui'
+# Form implementation generated from reading ui file 'gui/gui03.ui'
 #
 # Created by: PyQt5 UI code generator 5.6
 #
@@ -79,14 +79,12 @@ class Ui_MainWindow(object):
         self.status_frame.setObjectName("status_frame")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.status_frame)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.status_frame)
+        self.plainTextEdit.setReadOnly(True)
+        self.plainTextEdit.setObjectName("plainTextEdit")
+        self.horizontalLayout_4.addWidget(self.plainTextEdit)
         self.horizontalLayout.addWidget(self.status_frame)
         self.gridLayout_3.addWidget(self.status_box, 0, 2, 4, 1)
-        
-        self.qtConsole = ConsoleWidget()
-        self.horizontalLayout_4.addWidget(self.qtConsole)
-
-
-
         self.table_box = QtWidgets.QGroupBox(self.centralwidget)
         self.table_box.setObjectName("table_box")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.table_box)
@@ -181,8 +179,8 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 504, 25))
         self.menubar.setObjectName("menubar")
-        self.menuHelp = QtWidgets.QMenu(self.menubar)
-        self.menuHelp.setObjectName("menuHelp")
+        self.menuDoc = QtWidgets.QMenu(self.menubar)
+        self.menuDoc.setObjectName("menuDoc")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -196,13 +194,17 @@ class Ui_MainWindow(object):
         self.toolBar_3 = QtWidgets.QToolBar(MainWindow)
         self.toolBar_3.setObjectName("toolBar_3")
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar_3)
-        self.actionHelp = QtWidgets.QAction(MainWindow)
-        self.actionHelp.setObjectName("actionHelp")
-        self.menuHelp.addAction(self.actionHelp)
-        self.menubar.addAction(self.menuHelp.menuAction())
+        self.actionDoc = QtWidgets.QAction(MainWindow)
+        self.actionDoc.setObjectName("actionDoc")
+        self.menuDoc.addAction(self.actionDoc)
+        self.menubar.addAction(self.menuDoc.menuAction())
 
         self.retranslateUi(MainWindow)
+        self.table_select_button.clicked.connect(self.tableSelectFile)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+    def tableSelectFile(self):
+        self.plainTextEdit.appendPlainText('Hey')
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -227,67 +229,12 @@ class Ui_MainWindow(object):
         self.vocab_select_button.setText(_translate("MainWindow", "Select"))
         self.vocab_new_button.setText(_translate("MainWindow", "Create a new"))
         self.vocab_file_label.setText(_translate("MainWindow", "File"))
-        self.menuHelp.setTitle(_translate("MainWindow", "Menu"))
+        self.menuDoc.setTitle(_translate("MainWindow", "Menu"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.toolBar_2.setWindowTitle(_translate("MainWindow", "toolBar_2"))
         self.toolBar_3.setWindowTitle(_translate("MainWindow", "toolBar_3"))
-        self.actionHelp.setText(_translate("MainWindow", "Help"))
+        self.actionDoc.setText(_translate("MainWindow", "Show Documentation"))
 
-
-from qtconsole.qt import QtGui
-from qtconsole.rich_jupyter_widget import RichJupyterWidget
-from qtconsole.inprocess import QtInProcessKernelManager
-
-
-class ConsoleWidget(RichJupyterWidget):
-
-
-    def __init__(self, customBanner=None, *args, **kwargs):
-        super(ConsoleWidget, self).__init__(*args, **kwargs)
-
-        if customBanner is not None:
-            self.banner = customBanner
-
-        self.font_size = 6
-        self.kernel_manager = kernel_manager = QtInProcessKernelManager()
-        kernel_manager.start_kernel(show_banner=False)
-        kernel_manager.kernel.gui = 'qt'
-        self.kernel_client = kernel_client = self._kernel_manager.client()
-        kernel_client.start_channels()
-
-        def stop():
-            kernel_client.stop_channels()
-            kernel_manager.shutdown_kernel()
-            guisupport.get_app_qt().exit()
-
-        self.exit_requested.connect(stop)
-
-    def push_vars(self, variableDict):
-        """
-        Given a dictionary containing name / value pairs, push those variables
-        to the Jupyter console widget
-        """
-        self.kernel_manager.kernel.shell.push(variableDict)
-
-    def clear(self):
-        """
-        Clears the terminal
-        """
-        self._control.clear()
-
-        # self.kernel_manager
-
-    def print_text(self, text):
-        """
-        Prints some plain text to the console
-        """
-        self._append_plain_text(text)
-
-    def execute_command(self, command):
-        """
-        Execute a command in the frame of the console widget
-        """
-        self._execute(command, False)
 
 if __name__ == "__main__":
     import sys
@@ -295,10 +242,6 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
-    
-    #widget = ConsoleWidget()
-    #widget.show()
-    
     MainWindow.show()
     sys.exit(app.exec_())
 
